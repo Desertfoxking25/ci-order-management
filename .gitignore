@@ -1,0 +1,23 @@
+# Environment file
+.env
+
+# Logs, cache, debug és session
+writable/logs/
+writable/cache/
+writable/debugbar/
+writable/session/
+
+# Composer dependencies
+vendor/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Optional IDE files
+.idea/
+*.iml
+
+# Database file (ha SQLite-t használsz)
+*.db

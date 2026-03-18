@@ -70,7 +70,17 @@ class OrderController extends Controller {
     }
 
     public function statusLog($orderId) {
-        $logs = $this->orderService->getStatusLog($orderId);
-        return $this->response->setJSON($logs);
-    }
+        try {
+            $logs = $this->orderService->getStatusLog($orderId);
+
+            return $this->response->setJSON($logs);
+
+        } catch (\Exception $e) {
+            return $this->response
+                ->setStatusCode(400)
+                ->setJSON([
+                    'message' => $e->getMessage()
+                ]);
+        }
+    } 
 }

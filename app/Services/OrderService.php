@@ -186,4 +186,11 @@ class OrderService {
             'changed_at'  => date('Y-m-d H:i:s')
         ]);
     }
+
+    public function getStatusLog(int $orderId): array {
+        return $this->statusLogModel
+            ->where('order_id', $orderId)
+            ->orderBy('changed_at', 'ASC')
+            ->findAll();
+    }
 }

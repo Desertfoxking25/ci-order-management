@@ -80,7 +80,7 @@ async function changeStatusPrompt(orderId) {
         alert(data.message || 'Error occurred');
         return;
     }
-    
+
     alert(data.message);
     loadOrders();
 }
@@ -88,14 +88,28 @@ async function changeStatusPrompt(orderId) {
 // --- Státusznapló megjelenítése ---
 async function showLog(orderId, btn) {
     const logDiv = btn.nextElementSibling;
+
     if (!logDiv.classList.contains('hidden')) {
         logDiv.classList.add('hidden');
         return;
     }
 
     const res = await fetch(`${API_URL}/status-log/${orderId}`);
-    const logs = await res.json();
-    logDiv.innerHTML = logs.map(l => `From: ${l.from_status} → To: ${l.to_status} at ${l.changed_at}`).join('<br>');
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert(data.message || 'Error');
+        return;
+    }
+
+    if (!Array.isArray(data) || data.length === 0) {
+        logDiv.innerHTML = "No status changes yet.";
+    } else {
+        logDiv.innerHTML = data
+            .map(l => `From: ${l.from_status} → To: ${l.to_status} at ${l.changed_at}`)
+            .join('<br>');
+    }
+    
     logDiv.classList.remove('hidden');
 }
 

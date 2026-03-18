@@ -2,45 +2,45 @@
 
 namespace App\Controllers;
 
-use CodeIgniter\RESTful\ResourceController;
+use CodeIgniter\Controller;
 use App\Services\OrderService;
 
-class OrderController extends ResourceController {
+class OrderController extends Controller {
 
-    protected $format = 'json';
     protected OrderService $orderService;
 
     public function __construct() {
         $this->orderService = new OrderService();
     }
 
-    public function create() {
-        $data = $this->request->getPost();
-        $orderId = $this->orderService->createOrder($data);
-        return $this->respondCreated(['message' => 'Order created', 'order_id' => $orderId]);
+    public function list() {
+        return view('orders/orders');
     }
 
     public function index() {
-        $orders = $this->orderService->getOrders();
-        return $this->respond($orders);
+        return $this->response->setJSON($this->orderService->getOrders());
+    }
+
+    public function create() {
+        $data = $this->request->getPost();
+        $orderId = $this->orderService->createOrder($data);
+        return $this->response->setJSON(['message'=>'Order created','order_id'=>$orderId]);
     }
 
     public function addItem($orderId) {
         $data = $this->request->getPost();
-        try {
-            $this->orderService->addItem($orderId, $data['product_id'], intval($data['quantity']));
-            return $this->respondCreated(['message' => 'Item added to order']);
-        } catch (\Exception $e) {
-            return $this->fail($e->getMessage());
-        }
+        $this->orderService->addItem($orderId, $data['product_id'], intval($data['quantity']));
+        return $this->response->setJSON(['message'=>'Item added']);
     }
 
     public function changeStatus($orderId) {
-        try {
-            $this->orderService->changeStatus($orderId, $this->request->getPost('status'));
-            return $this->respond(['message' => 'Status updated successfully']);
-        } catch (\Exception $e) {
-            return $this->fail($e->getMessage());
-        }
+        $status = $this->request->getPost('status');
+        $this->orderService->changeStatus($orderId, $status);
+        return $this->response->setJSON(['message'=>'Status updated']);
+    }
+
+    public function statusLog($orderId) {
+        $logs = $this->orderService->getStatusLog($orderId);
+        return $this->response->setJSON($logs);
     }
 }

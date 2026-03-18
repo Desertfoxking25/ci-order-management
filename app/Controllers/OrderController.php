@@ -51,9 +51,22 @@ class OrderController extends Controller {
     }
 
     public function changeStatus($orderId) {
-        $status = $this->request->getPost('status');
-        $this->orderService->changeStatus($orderId, $status);
-        return $this->response->setJSON(['message'=>'Status updated']);
+        try {
+            $status = $this->request->getPost('status');
+
+            $this->orderService->changeStatus($orderId, $status);
+
+            return $this->response->setJSON([
+                'message' => 'Status updated'
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->response
+                ->setStatusCode(400)
+                ->setJSON([
+                    'message' => $e->getMessage()
+                ]);
+        }
     }
 
     public function statusLog($orderId) {

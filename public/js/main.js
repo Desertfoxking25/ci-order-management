@@ -55,6 +55,12 @@ async function addItemPrompt(orderId) {
         body: new URLSearchParams({ product_id, quantity })
     });
     const data = await res.json();
+
+    if (!res.ok) {
+        alert(data.message || 'Error occurred');
+        return;
+    }
+
     alert(data.message);
     loadOrders();
 }
@@ -69,6 +75,12 @@ async function changeStatusPrompt(orderId) {
         body: new URLSearchParams({ status })
     });
     const data = await res.json();
+
+    if (!res.ok) {
+        alert(data.message || 'Error occurred');
+        return;
+    }
+    
     alert(data.message);
     loadOrders();
 }

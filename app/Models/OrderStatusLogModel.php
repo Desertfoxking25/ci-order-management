@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class OrderStatusLogModel extends Model
 {
-    protected $table            = 'order_status_logs';
+    protected $table            = 'order_status_log';
     protected $primaryKey       = 'id';
     protected $returnType       = 'array';
     protected $useAutoIncrement = true;

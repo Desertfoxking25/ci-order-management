@@ -31,11 +31,6 @@ class OrderService {
         return $this->orderModel->insert($data);
     }
 
-    // Rendelés listázása
-    public function getOrders(): array {
-        return $this->orderModel->findAll();
-    }
-
     public function getOrdersWithItems(): array {
         $rows = $this->db->table('orders o')
             ->select('

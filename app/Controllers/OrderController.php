@@ -18,7 +18,7 @@ class OrderController extends Controller {
     }
 
     public function index() {
-        return $this->response->setJSON($this->orderService->getOrders());
+        return $this->response->setJSON($this->orderService->getOrdersWithItems());
     }
 
     public function create() {
@@ -28,9 +28,26 @@ class OrderController extends Controller {
     }
 
     public function addItem($orderId) {
-        $data = $this->request->getPost();
-        $this->orderService->addItem($orderId, $data['product_id'], intval($data['quantity']));
-        return $this->response->setJSON(['message'=>'Item added']);
+        try {
+            $data = $this->request->getPost();
+
+            $this->orderService->addItem(
+                $orderId,
+                $data['product_id'],
+                intval($data['quantity'])
+            );
+
+            return $this->response->setJSON([
+                'message' => 'Item added'
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->response
+                ->setStatusCode(400)
+                ->setJSON([
+                    'message' => $e->getMessage()
+                ]);
+        }
     }
 
     public function changeStatus($orderId) {

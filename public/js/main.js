@@ -13,7 +13,11 @@ async function loadOrders() {
             <td>${order.id}</td>
             <td>${order.customer_name}</td>
             <td>${order.status}</td>
-            <td>${order.items_count || '-'}</td>
+            <td>
+                ${order.items && order.items.length
+                    ? order.items.map(i => `${i.name} (${i.quantity})`).join('<br>')
+                    : '-'}
+            </td>
             <td>${order.created_at}</td>
             <td>
                 <button onclick="addItemPrompt(${order.id})">Add Item</button>

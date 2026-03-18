@@ -36,6 +36,50 @@ class OrderService {
         return $this->orderModel->findAll();
     }
 
+    public function getOrdersWithItems(): array {
+        $rows = $this->db->table('orders o')
+            ->select('
+                o.id, 
+                o.customer_name, 
+                o.status, 
+                o.created_at,
+                i.product_id, 
+                p.name as product_name, 
+                i.quantity
+            ')
+            ->join('order_items i', 'i.order_id = o.id', 'left')
+            ->join('products p', 'p.id = i.product_id', 'left')
+            ->orderBy('o.id', 'DESC')
+            ->get()
+            ->getResultArray();
+
+        $orders = [];
+
+        foreach ($rows as $row) {
+            $id = $row['id'];
+
+            // Order létrehozása
+            if (!isset($orders[$id])) {
+                $orders[$id] = [
+                    'id' => $row['id'],
+                    'customer_name' => $row['customer_name'],
+                    'status' => $row['status'],
+                    'created_at' => $row['created_at'],
+                    'items' => []
+                ];
+            }
+
+            if (!empty($row['product_id']) && !empty($row['quantity'])) {
+                $orders[$id]['items'][] = [
+                    'name' => $row['product_name'],
+                    'quantity' => $row['quantity']
+                ];
+            }
+        }
+
+        return array_values($orders);
+    }
+
      // Termék hozzáadása
     public function addItem(int $orderId, int $productId, int $quantity) {
 
